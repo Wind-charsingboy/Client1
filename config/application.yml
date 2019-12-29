@@ -1,0 +1,31 @@
+#作为客户端访问认证服务器 对应于认证服务器中注册的两个应用
+security:
+  oauth2:
+    client:
+      clientId: self
+      clientSecret: selfSecret
+#     请求授权码时跳转到的认证服务器的地址 对应于认证服务器所在项目配置文件的server.port和server.context-path oauth/authorize就是spring提供的
+#     这个地址也是访问index页面时跳转的地址
+#     请求任何地址都会先跳转到认证服务器上
+#     跳转的这个地址对应于第1步
+      user-authorization-uri: http://127.0.0.1:8989/server/oauth/authorize
+#     获取到了授权码 请求获取token时候的地址 同上
+      access-token-uri: http://127.0.0.1:8989/server/oauth/token
+
+#   应用拿到了认证服务器发送的jwt 解析jwt的时候 需要密钥 有这个密钥才能验证jwt的签名是否正确 这个就是去认证服务器的地址 这个地址上存着密钥
+#   访问这个地址的时候要带上clientId和clientSecret 这样认证服务器才知道时哪个应用在要密钥 这个就对应的是认证服务器的4
+#   只要认证过了 就会交出密钥
+    resource:
+      jwt:
+        key-uri: http://127.0.0.1:8989/server/oauth/token_key
+#security.oauth2.resource.token-info-uri= # URI of the token decoding endpoint.
+#security.oauth2.resource.user-info-uri= # URI of the user endpoint.
+      user-info-uri: http://127.0.0.1:8989/server/user
+      token-info-uri: http://127.0.0.1:9999/server/oauth/check_token
+      preferTokenInfo: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /client1
+
